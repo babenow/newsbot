@@ -1,4 +1,4 @@
 FROM golang
-LABEL authors="bbnf"
+LABEL authors="Maks B. <babenoff.code@outlook.com>"
 
 ENTRYPOINT ["top", "-b"]
