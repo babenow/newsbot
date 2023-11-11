@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   db:
-    image: postgres:16
+    image: postgres:15-alpine3.18
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -12,7 +12,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db:/.data/pgdata/
+      - ./.data/pgdata:/var/lib/postgresql/data/
 
 volumes:
   db:
