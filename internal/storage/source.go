@@ -18,6 +18,7 @@ type dbSource struct {
 	Name      string    `db:"source_name"`
 	FeedURL   string    `db:"feed_url"`
 	CreatedAt time.Time `db:"created_at"`
+	UpdatedAt time.Time `db:"updated_at"`
 }
 
 func NewSourcePostgresStorage(db *sqlx.DB) *SourcePostgresStorage {
