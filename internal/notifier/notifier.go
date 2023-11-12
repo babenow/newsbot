@@ -16,7 +16,7 @@ import (
 )
 
 type ArticlesProvider interface {
-	AllNotPosted(ctx context.Context, since time.Time, limit int64) ([]model.Article, error)
+	AllNotPosted(ctx context.Context, since time.Time, limit uint64) ([]model.Article, error)
 	MarkPosted(ctx context.Context, id int64) error
 }
 
@@ -48,6 +48,26 @@ func NewNotifier(
 		sendInterval:     sendInterval,
 		lookupTimeWindow: lookupTimeWindow,
 		channelID:        channelID,
+	}
+}
+
+func (n *Notifier) Start(ctx context.Context) error {
+	ticker := time.NewTicker(n.sendInterval)
+	defer ticker.Stop()
+
+	if err := n.SelectAndSendArticle(ctx); err != nil {
+		return err
+	}
+
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-ticker.C:
+			if err := n.SelectAndSendArticle(ctx); err != nil {
+				return err
+			}
+		}
 	}
 }
 
