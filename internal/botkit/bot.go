@@ -54,6 +54,11 @@ func (b *Bot) handleUpdate(ctx context.Context, update tgbotapi.Update) {
 			log.Printf("[ERROR] panic recovered: %v\n%s", p, string(debug.Stack()))
 		}
 	}()
+
+	if update.Message == nil {
+		return
+	}
+
 	var view ViewFunc
 
 	if !update.Message.IsCommand() {
