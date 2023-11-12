@@ -80,12 +80,12 @@ func main() {
 		}
 	}(ctx)
 
-	if err := newsBot.Start(ctx); err != nil {
+	if err := newsBot.Run(ctx); err != nil {
 		if !errors.Is(err, context.Canceled) {
 			log.Printf("[ERROR] failed start telegram bot: %v", err)
 			return
 		}
 
-		log.Printf("[ERROR] bot stopped with error: %v", err) 
+		log.Printf("[ERROR] bot stopped with error: %v", err)
 	}
 }

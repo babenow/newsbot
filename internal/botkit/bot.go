@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"runtime/debug"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -19,6 +20,24 @@ type Bot struct {
 
 func NewBot(botApi *tgbotapi.BotAPI) *Bot {
 	return &Bot{api: botApi}
+}
+
+func (b *Bot) Run(ctx context.Context) error {
+	u := tgbotapi.NewUpdate(0)
+	u.Timeout = 60
+
+	updates := b.api.GetUpdatesChan(u)
+
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case update := <-updates:
+			updateCtx, updateCancel := context.WithTimeout(ctx, 5*time.Second)
+			b.handleUpdate(updateCtx, update)
+			updateCancel()
+		}
+	}
 }
 
 func (b *Bot) RegisterCmdView(cmd string, vf ViewFunc) {
