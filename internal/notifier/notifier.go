@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -56,18 +57,22 @@ func (n *Notifier) Start(ctx context.Context) error {
 	defer ticker.Stop()
 
 	if err := n.SelectAndSendArticle(ctx); err != nil {
+		log.Printf("[ERROR] failed to select and send article: %v", err)
 		return err
 	}
 
 	for {
 		select {
-		case <-ctx.Done():
-			return ctx.Err()
 		case <-ticker.C:
 			if err := n.SelectAndSendArticle(ctx); err != nil {
+				log.Printf("[ERROR] failed to select and send article: %v", err)
 				return err
 			}
+
+		case <-ctx.Done():
+			return ctx.Err()
 		}
+
 	}
 }
 

@@ -47,6 +47,7 @@ func main() {
 			botApi,
 			config.Get().NotificationInterval,
 			2*config.Get().FetchInterval,
+			// 24*10*time.Hour,
 			config.Get().TelegramChannelID,
 		)
 	)
