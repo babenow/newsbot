@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/babenow/newsbot/internal/botkit/markup"
 	"github.com/babenow/newsbot/internal/model"
 	"github.com/go-shiori/go-readability"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -104,7 +105,12 @@ func (n *Notifier) extractSummary(ctx context.Context, article model.Article) (s
 func (n *Notifier) sendArticle(article model.Article, summary string) error {
 	const msgFormat = "*%s*%s\n\n%s"
 
-	msg := tgbotapi.NewMessage(n.channelID, fmt.Sprintf(msgFormat, article.Title, article.Link, article.Summary))
+	msg := tgbotapi.NewMessage(n.channelID, fmt.Sprintf(
+		msgFormat,
+		markup.EscapeForMarkdown(article.Title),
+		markup.EscapeForMarkdown(article.Summary),
+		markup.EscapeForMarkdown(article.Link),
+	))
 
 	msg.ParseMode = tgbotapi.ModeMarkdownV2
 
