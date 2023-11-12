@@ -6,7 +6,6 @@ var (
 	replacer = strings.NewReplacer(
 		"-",
 		"\\-",
-		"_",
 		"*",
 		"\\*",
 		"[",
