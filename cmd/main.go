@@ -8,6 +8,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/babenow/newsbot/internal/botkit"
+	"github.com/babenow/newsbot/internal/botkit/bot"
 	"github.com/babenow/newsbot/internal/config"
 	"github.com/babenow/newsbot/internal/fetcher"
 	"github.com/babenow/newsbot/internal/notifier"
@@ -51,6 +53,10 @@ func main() {
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
+
+	newsBot := botkit.NewBot(botApi)
+
+	newsBot.RegisterCmdView("start", bot.ViewCmdStart())
 
 	go func(ctx context.Context) {
 		if err := fetcher.Start(ctx); err != nil {
