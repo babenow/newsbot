@@ -71,7 +71,7 @@ func (s *ArticlePostgresStorage) AllNotPosted(ctx context.Context, since time.Ti
 		since.UTC().Format(time.RFC3339),
 		limit,
 	); err != nil {
-		return results, err
+		return nil, err
 	}
 
 	for _, article := range articles {
