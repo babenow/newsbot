@@ -69,14 +69,23 @@ func main() {
 		}
 	}(ctx)
 
-	// go func(ctx context.Context) {
-	if err := notifier.Start(ctx); err != nil {
+	go func(ctx context.Context) {
+		if err := notifier.Start(ctx); err != nil {
+			if !errors.Is(err, context.Canceled) {
+				log.Printf("[ERROR] failed to select and send articles: %v", err)
+				return
+			}
+
+			log.Printf("[ERROR] notifier stopped with error^ %v", err)
+		}
+	}(ctx)
+
+	if err := newsBot.Start(ctx); err != nil {
 		if !errors.Is(err, context.Canceled) {
-			log.Printf("[ERROR] failed to select and send articles: %v", err)
+			log.Printf("[ERROR] failed start telegram bot: %v", err)
 			return
 		}
 
-		log.Printf("[ERROR] notifier stopped with error^ %v", err)
+		log.Printf("[ERROR] bot stopped with error: %v", err) 
 	}
-	// }(ctx)
 }
